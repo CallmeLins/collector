@@ -1,0 +1,38 @@
+{
+	"name": "collector",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build && touch ./build/.nojekyll",
+		"preview": "vite preview",
+		"format": "prettier --write .",
+		"lint": "prettier --check . && eslint ."
+	},
+	"devDependencies": {
+		"@eslint/compat": "^1.2.5",
+		"@eslint/js": "^9.18.0",
+		"@sveltejs/adapter-static": "^3.0.8",
+		"@sveltejs/kit": "^2.16.1",
+		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"autoprefixer": "^10.4.20",
+		"daisyui": "^4.12.23",
+		"eslint": "^9.18.0",
+		"eslint-config-prettier": "^10.0.1",
+		"eslint-plugin-svelte": "^2.46.1",
+		"globals": "^15.14.0",
+		"prettier": "^3.4.2",
+		"prettier-plugin-svelte": "^3.3.3",
+		"prettier-plugin-tailwindcss": "^0.6.10",
+		"svelte": "^5.19.1",
+		"tailwindcss": "^3.4.17",
+		"vite": "^6.0.11"
+	},
+	"dependencies": {
+		"@iconify/json": "^2.2.299",
+		"@iconify/tailwind": "^1.2.0",
+		"fuse.js": "^7.0.0",
+		"theme-change": "^2.5.0"
+	}
+}
