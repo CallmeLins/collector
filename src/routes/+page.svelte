@@ -309,63 +309,66 @@
 		</div>
 
 		<div class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-8 md:gap-4">
-			{#each filteredResults as item}
-				{#if searchResults.length > 0}
+			{#if searchResults.length > 0}
+				{#each searchResults as result (result.item.url)}
 					<div class="col-span-2 rounded-lg border border-base-200 bg-base-100 p-3">
-						<a class="group flex cursor-pointer items-center gap-2" href={item.item.url} target="_blank">
+						<a class="group flex cursor-pointer items-center gap-2" href={result.item.url} target="_blank">
 							<img
-								src={`https://www.google.com/s2/favicons?domain=${item.item.url}&sz=32`}
+								src={result.item.icon || `https://www.google.com/s2/favicons?domain=${result.item.url}&sz=32`}
 								alt="favicon"
 								class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
 							/>
 							<div class="min-w-0 flex-1">
 								<h2 class="text-md overflow-hidden truncate whitespace-nowrap">
-									{@html item.matches?.find((m) => m.key === 'title')
-										? highlightText(item.item.title, item.matches.find((m) => m.key === 'title').indices)
-										: item.item.title}
+									{@html result.matches?.find((m) => m.key === 'title')
+										? highlightText(result.item.title, result.matches.find((m) => m.key === 'title').indices)
+										: result.item.title}
 								</h2>
 								<p class="overflow-hidden truncate whitespace-nowrap text-sm text-secondary">
-									{item.item.url}
+									{result.item.url}
 								</p>
 							</div>
 						</a>
-						<div class="tooltip" data-tip={item.item.description}>
+						<div class="tooltip" data-tip={result.item.description}>
 							<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary underline decoration-dotted underline-offset-2">
-								{@html item.matches?.find((m) => m.key === 'description')
-									? highlightText(item.item.description, item.matches.find((m) => m.key === 'description').indices)
-									: item.item.description}
+								{@html result.matches?.find((m) => m.key === 'description')
+									? highlightText(result.item.description, result.matches.find((m) => m.key === 'description').indices)
+									: result.item.description}
 							</p>
 						</div>
 					</div>
-				{:else if item.type === 'folder'}
-					<a
-						class="group col-span-1 flex cursor-pointer flex-col items-center justify-center"
-						href="#"
-						onclick={() => handleFolderClick(item.path + '%' + item.title)}
-					>
-						<span class="icon-[ph--folder-open-fill] transition-transform duration-300 group-hover:scale-110" style="width: 100px; height: 100px;"></span>
-
-						<p class="w-full overflow-hidden truncate whitespace-nowrap text-center text-sm text-secondary">{item.title}</p>
-					</a>
-				{:else}
-					<div class="col-span-2 rounded-lg border border-base-200 bg-base-100 p-3">
-						<a class="group flex cursor-pointer items-center gap-2" href={item.url} target="_blank">
-							<img
-								src={`https://www.google.com/s2/favicons?domain=${item.url}&sz=32`}
-								alt="favicon"
-								class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
-							/>
-							<div class="min-w-0 flex-1">
-								<h2 class="text-md overflow-hidden truncate whitespace-nowrap">{item.title}</h2>
-								<p class="overflow-hidden truncate whitespace-nowrap text-sm text-secondary">{item.url}</p>
-							</div>
+				{/each}
+			{:else}
+				{#each filteredResults as item (item.url || item.path + '%' + item.title)}
+					{#if item.type === 'folder'}
+						<a
+							class="group col-span-1 flex cursor-pointer flex-col items-center justify-center"
+							href="#"
+							onclick={() => handleFolderClick(item.path + '%' + item.title)}
+						>
+							<span class="icon-[ph--folder-open-fill] transition-transform duration-300 group-hover:scale-110" style="width: 100px; height: 100px;"></span>
+							<p class="w-full overflow-hidden truncate whitespace-nowrap text-center text-sm text-secondary">{item.title}</p>
 						</a>
-						<div class="tooltip" data-tip={item.description}>
-							<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary underline decoration-dotted underline-offset-2">{item.description}</p>
+					{:else}
+						<div class="col-span-2 rounded-lg border border-base-200 bg-base-100 p-3">
+							<a class="group flex cursor-pointer items-center gap-2" href={item.url} target="_blank">
+								<img
+									src={item.icon || `https://www.google.com/s2/favicons?domain=${item.url}&sz=32`}
+									alt="favicon"
+									class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
+								/>
+								<div class="min-w-0 flex-1">
+									<h2 class="text-md overflow-hidden truncate whitespace-nowrap">{item.title}</h2>
+									<p class="overflow-hidden truncate whitespace-nowrap text-sm text-secondary">{item.url}</p>
+								</div>
+							</a>
+							<div class="tooltip" data-tip={item.description}>
+								<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary underline decoration-dotted underline-offset-2">{item.description}</p>
+							</div>
 						</div>
-					</div>
-				{/if}
-			{/each}
+					{/if}
+				{/each}
+			{/if}
 		</div>
 	</div>
 

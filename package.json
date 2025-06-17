@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build && touch ./build/.nojekyll",
+		"build": "vite build",
 		"preview": "vite preview",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint ."
