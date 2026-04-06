@@ -188,11 +188,11 @@
 	<title>Collector</title>
 </svelte:head>
 
-<nav class="fixed top-0 z-50 w-full border-b border-base-300 bg-base-100/90 shadow-sm">
+<nav class="surface-panel fixed top-0 z-50 w-full">
 	<div class="px-3 py-3 lg:px-5 lg:pl-3">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center justify-start rtl:justify-end">
-				<label class="swap swap-rotate focus:outline-none sm:hidden">
+				<label class="surface-nav-action swap swap-rotate p-1 focus:outline-none sm:hidden">
 					<input
 						type="checkbox"
 						onclick={() => {
@@ -212,7 +212,7 @@
 			</div>
 
 			<div class="flex items-center justify-end">
-				<label class="input input-bordered flex h-10 items-center">
+				<label class="surface-input input flex h-10 items-center rounded-full">
 					<span class="icon-[fluent--search-12-regular]" style="width: 24px; height: 24px;"></span>
 					<input
 						id="searchInput"
@@ -228,7 +228,7 @@
 			<div class="flex items-center">
 				<div class="ms-3 flex items-center">
 					<!-- svelte-ignore a11y_label_has_associated_control -->
-					<label class="swap swap-rotate" data-toggle-theme="dark" data-act-class="swap-active">
+					<label class="surface-nav-action swap swap-rotate p-1" data-toggle-theme="dark" data-act-class="swap-active">
 						<!-- sun icon -->
 						<span class="swap-off icon-[prime--sun]" style="width: 32px; height: 32px;"></span>
 						<!-- moon icon -->
@@ -236,7 +236,7 @@
 					</label>
 				</div>
 				<div>
-					<a href="https://github.com/wefantasy/collector" target="_blank" aria-label="github" class="ms-3 flex items-center">
+					<a href="https://github.com/CallmeLins/collector" target="_blank" aria-label="github" class="surface-nav-action ms-3 flex items-center rounded-full p-1">
 						<span class="icon-[octicon--mark-github-24]" style="width: 30px; height: 30px;"></span>
 					</a>
 				</div>
@@ -257,7 +257,7 @@
 <aside
 	class="fixed left-0 top-0 z-40 h-screen {isAsideVisible
 		? 'translate-x-0'
-		: '-translate-x-full'} border-r border-base-300 bg-base-100 pt-20 transition-transform sm:w-48 sm:translate-x-0"
+		: '-translate-x-full'} surface-sidebar pt-20 transition-transform sm:w-48 sm:translate-x-0"
 	aria-label="Sidebar"
 >
 	<div class="h-full overflow-y-auto px-3 pb-4">
@@ -265,7 +265,7 @@
 			<li>
 				<a
 					href="#"
-					class="group flex cursor-pointer items-center hover:bg-base-200 {selectedFolder.join('%') === '' ? 'bg-base-200' : ''}"
+					class="surface-menu-item group flex cursor-pointer items-center {selectedFolder.join('%') === '' ? 'is-active' : ''}"
 					onclick={() => handleFolderClick('')}
 				>
 					<span class="icon-[clarity--folder-open-line]" style="width: 20px; height: 20px;"></span>
@@ -277,7 +277,7 @@
 					<li>
 						<a
 							href="#"
-							class="group flex cursor-pointer items-center hover:bg-base-200 {selectedFolder.join('%') === item.title ? 'bg-base-200' : ''}"
+							class="surface-menu-item group flex cursor-pointer items-center {selectedFolder.join('%') === item.title ? 'is-active' : ''}"
 							onclick={() => handleFolderClick(item.title)}
 						>
 							<span class="icon-[clarity--folder-open-solid]" style="width: 20px; height: 20px;"></span>
@@ -376,8 +376,8 @@
 
 	<div class="mt-4 rounded-lg">
 		<div class="text-center">
-			© 2025 <a href="https://github.com/wefantasy/collector" target="_blank" aria-label="github" class="link-hover link link-primary">collector</a>, Design by
-			<a href="https://github.com/wefantasy" target="_blank" aria-label="github" class="link-hover link link-primary">wefantasy</a>
+			© 2025 <a href="https://github.com/CallmeLins/collector" target="_blank" aria-label="github" class="link-hover link link-primary">collector</a>, Design by
+			<a href="https://github.com/CallmeLins" target="_blank" aria-label="github" class="link-hover link link-primary">CallmeLins</a>
 		</div>
 	</div>
 </div>

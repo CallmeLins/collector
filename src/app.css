@@ -3,28 +3,111 @@
 @import 'tailwindcss/utilities';
 
 @layer base {
+	:root,
+	[data-theme='light'] {
+		--page-surface: 247 247 247;
+		--card-surface: 255 255 255;
+		--card-surface-hover: 255 255 255;
+		--card-border-rgb: 0 0 0;
+		--card-border-opacity: 0.06;
+		--card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 10px 30px rgba(0, 0, 0, 0.05);
+		--card-shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.05), 0 14px 36px rgba(0, 0, 0, 0.08);
+		--panel-surface: 255 255 255;
+		--panel-surface-opacity: 0.78;
+		--panel-solid-surface: 252 252 252;
+		--panel-border-opacity: 0.08;
+		--panel-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+		--interactive-surface: 0 0 0;
+		--interactive-hover-opacity: 0.04;
+		--interactive-active-opacity: 0.06;
+		color-scheme: light;
+	}
+
+	[data-theme='dark'] {
+		--page-surface: 18 18 18;
+		--card-surface: 24 24 24;
+		--card-surface-hover: 34 34 34;
+		--card-border-rgb: 255 255 255;
+		--card-border-opacity: 0.04;
+		--card-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+		--card-shadow-hover: 0 14px 30px rgba(0, 0, 0, 0.24);
+		--panel-surface: 24 24 24;
+		--panel-surface-opacity: 0.88;
+		--panel-solid-surface: 24 24 24;
+		--panel-border-opacity: 0.05;
+		--panel-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
+		--interactive-surface: 255 255 255;
+		--interactive-hover-opacity: 0.06;
+		--interactive-active-opacity: 0.1;
+		color-scheme: dark;
+	}
+
+	html {
+		background-color: rgb(var(--page-surface));
+	}
+
 	body {
-		@apply min-h-screen bg-base-200 text-base-content;
+		@apply min-h-screen text-base-content;
+		background-color: rgb(var(--page-surface));
+		transition:
+			background-color 200ms ease,
+			color 200ms ease;
 	}
 }
 
 @layer components {
 	.bookmark-card {
-		@apply rounded-lg border border-base-200 bg-base-100 p-3 shadow-sm transition-all duration-200;
+		@apply rounded-xl p-3 transition-all duration-200;
+		background-color: rgb(var(--card-surface));
+		border: 1px solid rgb(var(--card-border-rgb) / var(--card-border-opacity));
+		box-shadow: var(--card-shadow);
 	}
 
 	.bookmark-card:hover {
-		@apply border-base-300 shadow-md;
-		transform: translateY(-1px);
+		background-color: rgb(var(--card-surface-hover));
+		box-shadow: var(--card-shadow-hover);
+		transform: translateY(-2px);
 	}
 
-	[data-theme='dark'] .bookmark-card {
-		border-color: hsl(var(--b3) / 0.7);
-		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+	.surface-panel {
+		background-color: rgb(var(--panel-surface) / var(--panel-surface-opacity));
+		border: 1px solid rgb(var(--card-border-rgb) / var(--panel-border-opacity));
+		box-shadow: var(--panel-shadow);
+		backdrop-filter: blur(18px);
 	}
 
-	[data-theme='dark'] .bookmark-card:hover {
-		border-color: hsl(var(--bc) / 0.18);
-		box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+	.surface-sidebar {
+		background-color: rgb(var(--panel-solid-surface));
+		border-right: 1px solid rgb(var(--card-border-rgb) / var(--panel-border-opacity));
+		box-shadow: var(--panel-shadow);
+	}
+
+	.surface-input {
+		@apply border-0 shadow-none;
+		background-color: rgb(var(--interactive-surface) / var(--interactive-hover-opacity));
+	}
+
+	.surface-input:focus-within {
+		background-color: rgb(var(--interactive-surface) / calc(var(--interactive-hover-opacity) + 0.03));
+	}
+
+	.surface-nav-action {
+		@apply rounded-full transition-colors duration-200;
+	}
+
+	.surface-nav-action:hover {
+		background-color: rgb(var(--interactive-surface) / var(--interactive-hover-opacity));
+	}
+
+	.surface-menu-item {
+		@apply rounded-lg transition-colors duration-200;
+	}
+
+	.surface-menu-item:hover {
+		background-color: rgb(var(--interactive-surface) / var(--interactive-hover-opacity));
+	}
+
+	.surface-menu-item.is-active {
+		background-color: rgb(var(--interactive-surface) / var(--interactive-active-opacity));
 	}
 }
