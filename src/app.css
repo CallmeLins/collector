@@ -1,3 +1,30 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+@layer base {
+	body {
+		@apply min-h-screen bg-base-200 text-base-content;
+	}
+}
+
+@layer components {
+	.bookmark-card {
+		@apply rounded-lg border border-base-200 bg-base-100 p-3 shadow-sm transition-all duration-200;
+	}
+
+	.bookmark-card:hover {
+		@apply border-base-300 shadow-md;
+		transform: translateY(-1px);
+	}
+
+	[data-theme='dark'] .bookmark-card {
+		border-color: hsl(var(--b3) / 0.7);
+		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+	}
+
+	[data-theme='dark'] .bookmark-card:hover {
+		border-color: hsl(var(--bc) / 0.18);
+		box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
+	}
+}

@@ -311,7 +311,7 @@
 		<div class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-8 md:gap-4">
 			{#if searchResults.length > 0}
 				{#each searchResults as result (result.item.url)}
-					<div class="col-span-2 rounded-lg border border-base-200 bg-base-100 p-3">
+					<div class="bookmark-card col-span-2">
 						<a class="group flex cursor-pointer items-center gap-2" href={result.item.url} target="_blank">
 							<img
 								src={result.item.icon || `https://www.google.com/s2/favicons?domain=${result.item.url}&sz=32`}
@@ -350,7 +350,7 @@
 							<p class="w-full overflow-hidden truncate whitespace-nowrap text-center text-sm text-secondary">{item.title}</p>
 						</a>
 					{:else}
-						<div class="col-span-2 rounded-lg border border-base-200 bg-base-100 p-3">
+						<div class="bookmark-card col-span-2">
 							<a class="group flex cursor-pointer items-center gap-2" href={item.url} target="_blank">
 								<img
 									src={item.icon || `https://www.google.com/s2/favicons?domain=${item.url}&sz=32`}
