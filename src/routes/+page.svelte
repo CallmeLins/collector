@@ -235,11 +235,6 @@
 						<span class="swap-on icon-[solar--moon-bold-duotone]" style="width: 32px; height: 32px;"></span>
 					</label>
 				</div>
-				<div>
-					<a href="https://github.com/CallmeLins/collector" target="_blank" aria-label="github" class="surface-nav-action ms-3 flex items-center rounded-full p-1">
-						<span class="icon-[octicon--mark-github-24]" style="width: 30px; height: 30px;"></span>
-					</a>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -375,9 +370,6 @@
 	<BackTop />
 
 	<div class="mt-4 rounded-lg">
-		<div class="text-center">
-			© 2025 <a href="https://github.com/CallmeLins/collector" target="_blank" aria-label="github" class="link-hover link link-primary">collector</a>, Design by
-			<a href="https://github.com/CallmeLins" target="_blank" aria-label="github" class="link-hover link link-primary">CallmeLins</a>
-		</div>
+		<div class="text-center text-sm text-secondary">© 2026 CallmeLins. All rights reserved.</div>
 	</div>
 </div>
