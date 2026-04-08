@@ -70,19 +70,24 @@
 			if (!Array.isArray(items)) return items;
 
 			return items.map((item) => {
+				const itemPath = parentPath ? [parentPath, item.title].join('%') : item.title;
+
 				if (item.type === 'folder' && Array.isArray(item.children)) {
 					const hasChildFolders = item.children.some((child) => child.type === 'folder');
 					return {
 						...item,
+						id: `folder:${itemPath}`,
 						path: parentPath,
 						hasChildren: hasChildFolders,
-						children: formatDataWithPath(item.children, parentPath ? [parentPath, item.title].join('%') : item.title)
+						children: formatDataWithPath(item.children, itemPath)
 					};
 				}
 
 				return {
 					...item,
-					path: parentPath
+					id: `bookmark:${itemPath}:${item.url}`,
+					path: parentPath,
+					faviconUrl: getFaviconUrl(item)
 				};
 			});
 		}
@@ -124,6 +129,17 @@
 		}
 		flatten(data);
 		return flattened;
+	}
+
+	function getFaviconUrl(item) {
+		if (item.icon) return item.icon;
+
+		try {
+			const hostname = new URL(item.url).hostname;
+			return `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+		} catch {
+			return `https://www.google.com/s2/favicons?domain=${item.url}&sz=32`;
+		}
 	}
 
 	let searchTerm = $state('');
@@ -305,13 +321,15 @@
 
 		<div class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-8 md:gap-4">
 			{#if searchResults.length > 0}
-				{#each searchResults as result (result.item.url)}
+				{#each searchResults as result (result.item.id)}
 					<div class="bookmark-card col-span-2">
 						<a class="group flex cursor-pointer items-center gap-2" href={result.item.url} target="_blank">
 							<img
-								src={result.item.icon || `https://www.google.com/s2/favicons?domain=${result.item.url}&sz=32`}
+								src={result.item.faviconUrl}
 								alt="favicon"
 								class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
+								loading="lazy"
+								decoding="async"
 							/>
 							<div class="min-w-0 flex-1">
 								<h2 class="text-md overflow-hidden truncate whitespace-nowrap">
@@ -334,7 +352,7 @@
 					</div>
 				{/each}
 			{:else}
-				{#each filteredResults as item (item.url || item.path + '%' + item.title)}
+				{#each filteredResults as item (item.id)}
 					{#if item.type === 'folder'}
 						<a
 							class="group col-span-1 flex cursor-pointer flex-col items-center justify-center"
@@ -348,9 +366,11 @@
 						<div class="bookmark-card col-span-2">
 							<a class="group flex cursor-pointer items-center gap-2" href={item.url} target="_blank">
 								<img
-									src={item.icon || `https://www.google.com/s2/favicons?domain=${item.url}&sz=32`}
+									src={item.faviconUrl}
 									alt="favicon"
 									class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
+									loading="lazy"
+									decoding="async"
 								/>
 								<div class="min-w-0 flex-1">
 									<h2 class="text-md overflow-hidden truncate whitespace-nowrap">{item.title}</h2>
