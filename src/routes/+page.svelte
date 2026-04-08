@@ -450,13 +450,11 @@
 								</p>
 							</div>
 						</a>
-						<div class="tooltip" data-tip={result.item.description}>
-							<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary underline decoration-dotted underline-offset-2">
-								{@html result.matches?.find((m) => m.key === 'description')
-									? highlightText(result.item.description, result.matches.find((m) => m.key === 'description').indices)
-									: result.item.description}
-							</p>
-						</div>
+						<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary">
+							{@html result.matches?.find((m) => m.key === 'description')
+								? highlightText(result.item.description, result.matches.find((m) => m.key === 'description').indices)
+								: result.item.description}
+						</p>
 					</div>
 				{/each}
 			{:else}
@@ -486,9 +484,7 @@
 									<p class="overflow-hidden truncate whitespace-nowrap text-sm text-secondary">{item.url}</p>
 								</div>
 							</a>
-							<div class="tooltip" data-tip={item.description}>
-								<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary underline decoration-dotted underline-offset-2">{item.description}</p>
-							</div>
+							<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary">{item.description}</p>
 						</div>
 					{/if}
 				{/each}
