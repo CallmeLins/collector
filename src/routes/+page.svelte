@@ -31,6 +31,7 @@
 	let fuseIndex = null;
 	let fuseInstance = null;
 	let searchResults = $state([]);
+	let faviconRetryIndex = $state({});
 	let formatedData = $derived(formatData(data.data));
 	let flattenedData = $derived(flattenData(formatedData));
 
@@ -87,7 +88,7 @@
 					...item,
 					id: `bookmark:${itemPath}:${item.url}`,
 					path: parentPath,
-					faviconUrl: getFaviconUrl(item)
+					faviconSources: getFaviconSources(item)
 				};
 			});
 		}
@@ -131,15 +132,36 @@
 		return flattened;
 	}
 
-	function getFaviconUrl(item) {
-		if (item.icon) return item.icon;
+	function getFaviconSources(item) {
+		if (item.icon) return [item.icon];
 
 		try {
-			const hostname = new URL(item.url).hostname;
-			return `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+			const parsedUrl = new URL(item.url);
+			const { origin, hostname } = parsedUrl;
+			return [
+				`${origin}/favicon.ico`,
+				`https://icons.duckduckgo.com/ip3/${hostname}.ico`,
+				`https://www.google.com/s2/favicons?domain=${hostname}&sz=32`,
+				'./favicon.svg'
+			];
 		} catch {
-			return `https://www.google.com/s2/favicons?domain=${item.url}&sz=32`;
+			return [`https://www.google.com/s2/favicons?domain=${item.url}&sz=32`, './favicon.svg'];
 		}
+	}
+
+	function getFaviconSrc(item) {
+		const retryIndex = faviconRetryIndex[item.id] ?? 0;
+		return item.faviconSources[Math.min(retryIndex, item.faviconSources.length - 1)];
+	}
+
+	function handleFaviconError(item) {
+		const retryIndex = faviconRetryIndex[item.id] ?? 0;
+		if (retryIndex >= item.faviconSources.length - 1) return;
+
+		faviconRetryIndex = {
+			...faviconRetryIndex,
+			[item.id]: retryIndex + 1
+		};
 	}
 
 	let searchTerm = $state('');
@@ -325,11 +347,12 @@
 					<div class="bookmark-card col-span-2">
 						<a class="group flex cursor-pointer items-center gap-2" href={result.item.url} target="_blank">
 							<img
-								src={result.item.faviconUrl}
+								src={getFaviconSrc(result.item)}
 								alt="favicon"
 								class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
 								loading="lazy"
 								decoding="async"
+								onerror={() => handleFaviconError(result.item)}
 							/>
 							<div class="min-w-0 flex-1">
 								<h2 class="text-md overflow-hidden truncate whitespace-nowrap">
@@ -366,11 +389,12 @@
 						<div class="bookmark-card col-span-2">
 							<a class="group flex cursor-pointer items-center gap-2" href={item.url} target="_blank">
 								<img
-									src={item.faviconUrl}
+									src={getFaviconSrc(item)}
 									alt="favicon"
 									class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
 									loading="lazy"
 									decoding="async"
+									onerror={() => handleFaviconError(item)}
 								/>
 								<div class="min-w-0 flex-1">
 									<h2 class="text-md overflow-hidden truncate whitespace-nowrap">{item.title}</h2>
