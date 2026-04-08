@@ -31,15 +31,24 @@
 	let fuseIndex = null;
 	let fuseInstance = null;
 	let searchResults = $state([]);
-	let faviconRetryIndex = $state({});
+	let faviconResolvedSrc = $state({});
 	let formatedData = $derived(formatData(data.data));
 	let flattenedData = $derived(flattenData(formatedData));
+	const faviconPreloadTasks = new Map();
+	let faviconPreloadStarted = false;
 
 	$effect(() => {
 		if (flattenedData) {
 			fuseIndex = Fuse.createIndex(searchOptions.keys, flattenedData);
 			fuseInstance = new Fuse(flattenedData, searchOptions, fuseIndex);
 		}
+	});
+
+	$effect(() => {
+		if (!browser || faviconPreloadStarted || !flattenedData?.length) return;
+
+		faviconPreloadStarted = true;
+		void preloadAllFavicons(flattenedData);
 	});
 
 	function handleKeyPress(event) {
@@ -142,26 +151,102 @@
 				`${origin}/favicon.ico`,
 				`https://icons.duckduckgo.com/ip3/${hostname}.ico`,
 				`https://www.google.com/s2/favicons?domain=${hostname}&sz=32`,
-				'./favicon.svg'
+				createFallbackIcon(item.title)
 			];
 		} catch {
-			return [`https://www.google.com/s2/favicons?domain=${item.url}&sz=32`, './favicon.svg'];
+			return [`https://www.google.com/s2/favicons?domain=${item.url}&sz=32`, createFallbackIcon(item.title)];
 		}
 	}
 
-	function getFaviconSrc(item) {
-		const retryIndex = faviconRetryIndex[item.id] ?? 0;
-		return item.faviconSources[Math.min(retryIndex, item.faviconSources.length - 1)];
+	function createFallbackIcon(title) {
+		const label = (title || 'C').trim().slice(0, 1) || 'C';
+		const svg = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+				<rect width="64" height="64" rx="18" fill="#2a2a2a"/>
+				<rect x="2" y="2" width="60" height="60" rx="16" fill="#f4f4f4" fill-opacity="0.08"/>
+				<text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28" font-weight="700" fill="#f5f5f5">${escapeSvgText(label)}</text>
+			</svg>
+		`;
+
+		return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 	}
 
-	function handleFaviconError(item) {
-		const retryIndex = faviconRetryIndex[item.id] ?? 0;
-		if (retryIndex >= item.faviconSources.length - 1) return;
+	function escapeSvgText(text) {
+		return text.replace(/[&<>"']/g, (char) => {
+			const entities = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#39;'
+			};
 
-		faviconRetryIndex = {
-			...faviconRetryIndex,
-			[item.id]: retryIndex + 1
+			return entities[char];
+		});
+	}
+
+	function getFaviconSrc(item) {
+		return faviconResolvedSrc[item.id] || item.faviconSources[item.faviconSources.length - 1];
+	}
+
+	function setResolvedFavicon(itemId, src) {
+		if (faviconResolvedSrc[itemId] === src) return;
+
+		faviconResolvedSrc = {
+			...faviconResolvedSrc,
+			[itemId]: src
 		};
+	}
+
+	function preloadImage(src) {
+		return new Promise((resolve) => {
+			const image = new Image();
+			image.onload = () => resolve(true);
+			image.onerror = () => resolve(false);
+			image.src = src;
+		});
+	}
+
+	async function preloadFavicon(item) {
+		if (!browser) return item.faviconSources[item.faviconSources.length - 1];
+		if (faviconResolvedSrc[item.id]) return faviconResolvedSrc[item.id];
+		if (faviconPreloadTasks.has(item.id)) return faviconPreloadTasks.get(item.id);
+
+		const task = (async () => {
+			for (const src of item.faviconSources.slice(0, -1)) {
+				if (await preloadImage(src)) {
+					setResolvedFavicon(item.id, src);
+					return src;
+				}
+			}
+
+			const fallbackSrc = item.faviconSources[item.faviconSources.length - 1];
+			setResolvedFavicon(item.id, fallbackSrc);
+			return fallbackSrc;
+		})();
+
+		faviconPreloadTasks.set(item.id, task);
+
+		try {
+			return await task;
+		} finally {
+			faviconPreloadTasks.delete(item.id);
+		}
+	}
+
+	async function preloadAllFavicons(items) {
+		const queue = [...items];
+		const concurrency = 6;
+
+		async function worker() {
+			while (queue.length > 0) {
+				const item = queue.shift();
+				if (!item) continue;
+				await preloadFavicon(item);
+			}
+		}
+
+		await Promise.all(Array.from({ length: Math.min(concurrency, queue.length) }, worker));
 	}
 
 	let searchTerm = $state('');
@@ -352,7 +437,7 @@
 								class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
 								loading="lazy"
 								decoding="async"
-								onerror={() => handleFaviconError(result.item)}
+								onerror={() => setResolvedFavicon(result.item.id, result.item.faviconSources[result.item.faviconSources.length - 1])}
 							/>
 							<div class="min-w-0 flex-1">
 								<h2 class="text-md overflow-hidden truncate whitespace-nowrap">
@@ -394,7 +479,7 @@
 									class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
 									loading="lazy"
 									decoding="async"
-									onerror={() => handleFaviconError(item)}
+									onerror={() => setResolvedFavicon(item.id, item.faviconSources[item.faviconSources.length - 1])}
 								/>
 								<div class="min-w-0 flex-1">
 									<h2 class="text-md overflow-hidden truncate whitespace-nowrap">{item.title}</h2>
