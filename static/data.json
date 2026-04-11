@@ -4,6 +4,14 @@
         "type": "folder",
         "children": [
             {
+                "title": "FoxCode",
+                "url": "https://foxcode.rjj.cc",
+                "icon": "",
+                "categories": "人工智障",
+                "tags": "AI,API服务",
+                "description": "L站动物 API 站之一，非公益，应急情况下使用，要付费哦"
+            },
+            {
                 "title": "AIAPI",
                 "url": "https://aiapi.exe.xyz/",
                 "icon": "",
@@ -66,6 +74,14 @@
                 "categories": "人工智障",
                 "tags": "AI平台",
                 "description": "冰冷的公益工具人，安静运行，悄无声息"
+            }
+            {
+                "title": "薄荷",
+                "url": "https://x666.me",
+                "icon": "",
+                "categories": "人工智障",
+                "tags": "AI平台",
+                "description": "透心凉，心飞扬，薄荷佬优选公益站"
             }
         ]
     },
