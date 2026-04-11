@@ -4,6 +4,14 @@
         "type": "folder",
         "children": [
             {
+                "title": "FoxCode",
+                "url": "https://foxcode.rjj.cc",
+                "icon": "",
+                "categories": "人工智障",
+                "tags": "AI,API服务",
+                "description": "L站动物 API 站之一，非公益，应急情况下使用，要付费哦"
+            },
+            {
                 "title": "AIAPI",
                 "url": "https://aiapi.exe.xyz/",
                 "icon": "",
@@ -66,6 +74,14 @@
                 "categories": "人工智障",
                 "tags": "AI平台",
                 "description": "冰冷的公益工具人，安静运行，悄无声息"
+            },
+            {
+                "title": "薄荷",
+                "url": "https://x666.me",
+                "icon": "",
+                "categories": "人工智障",
+                "tags": "AI平台",
+                "description": "透心凉，心飞扬，薄荷佬优选公益站"
             }
         ]
     },
@@ -79,7 +95,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "自动化,跨平台",
-                "description": "支持Google、Apple、Facebook账号登录，可自定义应用联动规则，实现跨平台自动化操作"
+                "description": "万物互联自动化小管家，APP之间随意联动，懒人效率神器"
             },
             {
                 "title": "签到今日",
@@ -87,7 +103,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "自动签到,工具平台",
-                "description": "专注于各类平台自动签到的工具站点，便捷管理多账号签到任务"
+                "description": "多平台自动签到集中营，解放双手，再也不怕忘记打卡"
             },
             {
                 "title": "Pointofix",
@@ -95,7 +111,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "屏幕标注,免费软件",
-                "description": "支持Windows系统的免费屏幕标注工具，提供安装版和绿色版，兼容多语言包，可自定义翻译文件适配不同语种"
+                "description": "轻量屏幕标注工具，演示、教学圈重点神器，小巧还免费"
             },
             {
                 "title": "购物工具箱",
@@ -103,7 +119,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "购物辅助,价格监控",
-                "description": "整合京东、淘宝、拼多多等平台优惠工具，支持价格监控、优惠券查找、批量操作等功能，附带购物返利和避坑指南"
+                "description": "电商优惠一把抓，查券、盯价、薅羊毛专用工具箱"
             },
             {
                 "title": "Telegram",
@@ -111,7 +127,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "即时通讯,网页工具",
-                "description": "Telegram官方网页版，无需安装客户端即可登录使用，支持跨设备消息同步，链接获取失败可尝试刷新重试"
+                "description": "TG官方网页版，不用装客户端，随时在线冲浪"
             },
             {
                 "title": "ProcessOn",
@@ -119,7 +135,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "思维导图,流程图",
-                "description": "支持多人协作的在线作图工具，涵盖思维导图、UML图、甘特图等多种类型，提供百万模板和AI辅助生成功能，支持多格式导入导出"
+                "description": "在线作图老大哥，思维导图、流程图随手画，支持多人协作"
             },
             {
                 "title": "咕咕鸽",
@@ -127,7 +143,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "技术分享,VPS推荐",
-                "description": "专注于VPS选购、Docker项目部署和实用脚本分享的技术博客，累计发布281篇文章，内容涵盖极客工具和效率技巧"
+                "description": "技术大佬自留地，VPS、Docker、各种脚本干货应有尽有"
             },
             {
                 "title": "OAIPRO",
@@ -135,7 +151,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "AI聊天,接口服务",
-                "description": "支持账号登录和Linux DO第三方登录的AI聊天接口服务平台，专注于提供稳定的AI交互接口"
+                "description": "AI聊天接口站，主打一个稳定可用，应急聊天好去处"
             },
             {
                 "title": "Civitai",
@@ -143,15 +159,15 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "AI模型,资源分享",
-                "description": "AI绘画模型分享平台，汇聚各类开源AI生成模型，供创作者免费下载使用"
+                "description": "AI绘画模型仓库，Lora、模型、画风插件应有尽有，画师天堂"
             },
             {
                 "title": "Figma",
                 "url": "https://www.figma.com/",
                 "icon": "",
                 "categories": "工具合集",
-                "tags": "设计协作,AI辅助",
-                "description": "集设计、协作、开发于一体的在线平台，支持AI生成代码、响应式网站设计，提供丰富模板和组件库，适配团队协同场景"
+                "tags": "设计协作,UI设计",
+                "description": "UI设计在线神器，团队协作无压力，原型设计一把梭"
             },
             {
                 "title": "Icon Kitchen",
@@ -159,7 +175,7 @@
                 "icon": "",
                 "categories": "工具合集",
                 "tags": "图标生成,设计工具",
-                "description": "提供海量图标资源和自定义生成功能，支持调整图标颜色、效果和背景纹理，可导出多种格式，适配设计和开发场景"
+                "description": "图标在线生成器，一键定制APP图标，设计小白也能用"
             }
         ]
     }
