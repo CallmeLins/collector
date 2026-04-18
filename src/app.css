@@ -99,6 +99,22 @@
 		background-color: rgb(var(--interactive-surface) / var(--interactive-hover-opacity));
 	}
 
+	.surface-theme-switch {
+		background-color: rgb(var(--interactive-surface) / var(--interactive-hover-opacity));
+	}
+
+	.surface-theme-option {
+		@apply flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-200;
+	}
+
+	.surface-theme-option:hover {
+		background-color: rgb(var(--interactive-surface) / calc(var(--interactive-hover-opacity) + 0.04));
+	}
+
+	.surface-theme-option.is-active {
+		background-color: rgb(var(--interactive-surface) / var(--interactive-active-opacity));
+	}
+
 	.surface-menu-item {
 		@apply rounded-lg transition-colors duration-200;
 	}
