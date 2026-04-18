@@ -6,8 +6,40 @@
 
 	let { data } = $props();
 	const THEME_STORAGE_KEY = 'collector-theme-mode';
+	const SEARCH_ENGINE_STORAGE_KEY = 'collector-search-engine';
+	const CUSTOM_SEARCH_TEMPLATE_STORAGE_KEY = 'collector-custom-search-template';
 	const THEME_MODES = ['light', 'dark', 'system'];
 	const SYSTEM_THEME_MEDIA = '(prefers-color-scheme: dark)';
+	const SEARCH_ENGINES = [
+		{
+			id: 'bookmark',
+			label: 'Bookmarks',
+			placeholder: 'Search bookmarks'
+		},
+		{
+			id: 'google',
+			label: 'Google',
+			placeholder: 'Search with Google',
+			url: 'https://www.google.com/search?q=%s'
+		},
+		{
+			id: 'baidu',
+			label: 'Baidu',
+			placeholder: 'Search with Baidu',
+			url: 'https://www.baidu.com/s?wd=%s'
+		},
+		{
+			id: 'bing',
+			label: 'Bing',
+			placeholder: 'Search with Bing',
+			url: 'https://www.bing.com/search?q=%s'
+		},
+		{
+			id: 'custom',
+			label: 'Custom',
+			placeholder: 'Search with Custom'
+		}
+	];
 
 	const keys = [
 		{
@@ -36,11 +68,14 @@
 	let searchResults = $state([]);
 	let faviconResolvedSrc = $state({});
 	let themeMode = $state('system');
+	let searchEngine = $state('bookmark');
+	let customSearchTemplate = $state('');
 	let formatedData = $derived(formatData(data.data));
 	let flattenedData = $derived(flattenData(formatedData));
 	const faviconPreloadTasks = new Map();
 	let faviconPreloadStarted = false;
 	let themeMediaQuery;
+	let activeSearchEngine = $derived(getSearchEngineConfig(searchEngine));
 
 	$effect(() => {
 		if (flattenedData) {
@@ -68,7 +103,10 @@
 		document.addEventListener('keydown', handleKeyPress);
 		themeMediaQuery = window.matchMedia(SYSTEM_THEME_MEDIA);
 		const savedThemeMode = localStorage.getItem(THEME_STORAGE_KEY);
+		const savedSearchEngine = localStorage.getItem(SEARCH_ENGINE_STORAGE_KEY);
 		themeMode = THEME_MODES.includes(savedThemeMode) ? savedThemeMode : 'system';
+		searchEngine = SEARCH_ENGINES.some((engine) => engine.id === savedSearchEngine) ? savedSearchEngine : 'bookmark';
+		customSearchTemplate = localStorage.getItem(CUSTOM_SEARCH_TEMPLATE_STORAGE_KEY) || '';
 		applyTheme(themeMode, false);
 		themeMediaQuery.addEventListener('change', handleSystemThemeChange);
 	});
@@ -103,6 +141,77 @@
 	function handleSystemThemeChange() {
 		if (themeMode !== 'system') return;
 		applyTheme('system', false);
+	}
+
+	function getSearchEngineConfig(engineId) {
+		return SEARCH_ENGINES.find((engine) => engine.id === engineId) || SEARCH_ENGINES[0];
+	}
+
+	function getNextSearchEngine(currentEngineId) {
+		const currentIndex = SEARCH_ENGINES.findIndex((engine) => engine.id === currentEngineId);
+		return SEARCH_ENGINES[(currentIndex + 1) % SEARCH_ENGINES.length];
+	}
+
+	function configureCustomSearch() {
+		if (!browser) return false;
+
+		const defaultTemplate = customSearchTemplate || 'https://example.com/search?q=%s';
+		const template = window.prompt('Custom search URL template, use %s for the query', defaultTemplate)?.trim();
+		if (!template) return false;
+		if (!template.includes('%s')) {
+			window.alert('Custom search URL must include %s as the query placeholder.');
+			return false;
+		}
+
+		customSearchTemplate = template;
+		localStorage.setItem(CUSTOM_SEARCH_TEMPLATE_STORAGE_KEY, template);
+		return true;
+	}
+
+	function cycleSearchEngine() {
+		const nextEngine = getNextSearchEngine(searchEngine);
+		if (nextEngine.id === 'custom' && !customSearchTemplate && !configureCustomSearch()) {
+			return;
+		}
+
+		searchEngine = nextEngine.id;
+		localStorage.setItem(SEARCH_ENGINE_STORAGE_KEY, nextEngine.id);
+		handleSearch();
+	}
+
+	function handleSearchEngineContextMenu(event) {
+		event.preventDefault();
+		configureCustomSearch();
+	}
+
+	function buildSearchUrl(query) {
+		const trimmedQuery = query.trim();
+		if (!trimmedQuery || searchEngine === 'bookmark') return '';
+
+		const template = searchEngine === 'custom' ? customSearchTemplate : activeSearchEngine.url;
+		if (!template) return '';
+
+		return template.replace('%s', encodeURIComponent(trimmedQuery));
+	}
+
+	function submitSearch() {
+		if (searchEngine === 'bookmark') {
+			handleSearch();
+			return;
+		}
+
+		if (searchEngine === 'custom' && !customSearchTemplate && !configureCustomSearch()) {
+			return;
+		}
+
+		const url = buildSearchUrl(searchTerm);
+		if (!url) return;
+		window.open(url, '_blank', 'noopener,noreferrer');
+	}
+
+	function handleSearchSubmit(event) {
+		event.preventDefault();
+		submitSearch();
 	}
 
 	function formatData(data) {
@@ -291,6 +400,11 @@
 	let filteredResults = $derived(getFilteredResults());
 
 	function handleSearch() {
+		if (searchEngine !== 'bookmark') {
+			searchResults = [];
+			return;
+		}
+
 		if (!fuseInstance || searchTerm.length < searchOptions.minMatchCharLength) {
 			searchResults = [];
 			return;
@@ -371,18 +485,27 @@
 			</div>
 
 			<div class="flex items-center justify-end">
-				<label class="surface-input input flex h-10 items-center rounded-full">
-					<span class="icon-[fluent--search-12-regular]" style="width: 24px; height: 24px;"></span>
+				<form class="surface-input input flex h-10 items-center rounded-full" onsubmit={handleSearchSubmit}>
+					<button
+						type="button"
+						aria-label={`Switch search engine. Current: ${activeSearchEngine.label}`}
+						title={`Search engine: ${activeSearchEngine.label}. Click to switch, right-click to edit custom search.`}
+						class="surface-search-engine mr-1 flex h-8 w-8 items-center justify-center rounded-full"
+						onclick={cycleSearchEngine}
+						oncontextmenu={handleSearchEngineContextMenu}
+					>
+						<span class="icon-[fluent--search-12-regular]" style="width: 20px; height: 20px;"></span>
+					</button>
 					<input
 						id="searchInput"
 						type="text"
-						placeholder="Type / to search"
+						placeholder={`${activeSearchEngine.placeholder}...`}
 						class="input input-ghost w-full max-w-xs focus:border-none"
-						oninput={(e) => handleSearch(e.target.value)}
+						oninput={handleSearch}
 						bind:this={searchInputRef}
 						bind:value={searchTerm}
 					/>
-				</label>
+				</form>
 			</div>
 			<div class="ms-3 flex items-center">
 				<div class="surface-theme-switch flex items-center gap-1 rounded-full p-1">

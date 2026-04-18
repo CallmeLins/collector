@@ -91,6 +91,14 @@
 		background-color: rgb(var(--interactive-surface) / calc(var(--interactive-hover-opacity) + 0.03));
 	}
 
+	.surface-search-engine {
+		@apply transition-colors duration-200;
+	}
+
+	.surface-search-engine:hover {
+		background-color: rgb(var(--interactive-surface) / calc(var(--interactive-hover-opacity) + 0.04));
+	}
+
 	.surface-nav-action {
 		@apply rounded-full transition-colors duration-200;
 	}
