@@ -5,6 +5,9 @@
 	import BackTop from '$lib/components/BackTop.svelte';
 
 	let { data } = $props();
+	const THEME_STORAGE_KEY = 'collector-theme-mode';
+	const THEME_MODES = ['light', 'dark', 'system'];
+	const SYSTEM_THEME_MEDIA = '(prefers-color-scheme: dark)';
 
 	const keys = [
 		{
@@ -32,10 +35,12 @@
 	let fuseInstance = null;
 	let searchResults = $state([]);
 	let faviconResolvedSrc = $state({});
+	let themeMode = $state('system');
 	let formatedData = $derived(formatData(data.data));
 	let flattenedData = $derived(flattenData(formatedData));
 	const faviconPreloadTasks = new Map();
 	let faviconPreloadStarted = false;
+	let themeMediaQuery;
 
 	$effect(() => {
 		if (flattenedData) {
@@ -58,16 +63,47 @@
 		}
 	}
 	onMount(() => {
-		if (browser) {
-			document.addEventListener('keydown', handleKeyPress);
-		}
+		if (!browser) return;
+
+		document.addEventListener('keydown', handleKeyPress);
+		themeMediaQuery = window.matchMedia(SYSTEM_THEME_MEDIA);
+		const savedThemeMode = localStorage.getItem(THEME_STORAGE_KEY);
+		themeMode = THEME_MODES.includes(savedThemeMode) ? savedThemeMode : 'system';
+		applyTheme(themeMode, false);
+		themeMediaQuery.addEventListener('change', handleSystemThemeChange);
 	});
 
 	onDestroy(() => {
-		if (browser) {
-			document.removeEventListener('keydown', handleKeyPress);
-		}
+		if (!browser) return;
+
+		document.removeEventListener('keydown', handleKeyPress);
+		themeMediaQuery?.removeEventListener('change', handleSystemThemeChange);
 	});
+
+	function resolveTheme(mode) {
+		if (mode === 'system') {
+			return themeMediaQuery?.matches ? 'dark' : 'light';
+		}
+
+		return mode;
+	}
+
+	function applyTheme(mode, persist = true) {
+		themeMode = mode;
+		document.documentElement.setAttribute('data-theme', resolveTheme(mode));
+
+		if (!persist) return;
+		localStorage.setItem(THEME_STORAGE_KEY, mode);
+	}
+
+	function handleThemeModeChange(mode) {
+		applyTheme(mode);
+	}
+
+	function handleSystemThemeChange() {
+		if (themeMode !== 'system') return;
+		applyTheme('system', false);
+	}
 
 	function formatData(data) {
 		if (!data) return [];
@@ -348,15 +384,32 @@
 					/>
 				</label>
 			</div>
-			<div class="flex items-center">
-				<div class="ms-3 flex items-center">
-					<!-- svelte-ignore a11y_label_has_associated_control -->
-					<label class="surface-nav-action swap swap-rotate p-1" data-toggle-theme="dark" data-act-class="swap-active">
-						<!-- sun icon -->
-						<span class="swap-off icon-[prime--sun]" style="width: 32px; height: 32px;"></span>
-						<!-- moon icon -->
-						<span class="swap-on icon-[solar--moon-bold-duotone]" style="width: 32px; height: 32px;"></span>
-					</label>
+			<div class="ms-3 flex items-center">
+				<div class="surface-theme-switch flex items-center gap-1 rounded-full p-1">
+					<button
+						type="button"
+						aria-label="Use light theme"
+						class="surface-theme-option {themeMode === 'light' ? 'is-active' : ''}"
+						onclick={() => handleThemeModeChange('light')}
+					>
+						<span class="icon-[prime--sun]" style="width: 20px; height: 20px;"></span>
+					</button>
+					<button
+						type="button"
+						aria-label="Follow system theme"
+						class="surface-theme-option {themeMode === 'system' ? 'is-active' : ''}"
+						onclick={() => handleThemeModeChange('system')}
+					>
+						<span class="icon-[solar--monitor-bold]" style="width: 20px; height: 20px;"></span>
+					</button>
+					<button
+						type="button"
+						aria-label="Use dark theme"
+						class="surface-theme-option {themeMode === 'dark' ? 'is-active' : ''}"
+						onclick={() => handleThemeModeChange('dark')}
+					>
+						<span class="icon-[solar--moon-bold-duotone]" style="width: 20px; height: 20px;"></span>
+					</button>
 				</div>
 			</div>
 		</div>

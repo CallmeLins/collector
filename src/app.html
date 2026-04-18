@@ -4,6 +4,21 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			(() => {
+				const storageKey = 'collector-theme-mode';
+				const storedMode = localStorage.getItem(storageKey);
+				const themeMode = ['light', 'dark', 'system'].includes(storedMode) ? storedMode : 'system';
+				const resolvedTheme =
+					themeMode === 'system'
+						? window.matchMedia('(prefers-color-scheme: dark)').matches
+							? 'dark'
+							: 'light'
+						: themeMode;
+
+				document.documentElement.setAttribute('data-theme', resolvedTheme);
+			})();
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
