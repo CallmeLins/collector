@@ -7,7 +7,6 @@
 	let { data } = $props();
 	const THEME_STORAGE_KEY = 'collector-theme-mode';
 	const SEARCH_ENGINE_STORAGE_KEY = 'collector-search-engine';
-	const CUSTOM_SEARCH_TEMPLATE_STORAGE_KEY = 'collector-custom-search-template';
 	const THEME_MODES = ['light', 'dark', 'system'];
 	const SYSTEM_THEME_MEDIA = '(prefers-color-scheme: dark)';
 	const SEARCH_ENGINES = [
@@ -33,11 +32,6 @@
 			label: 'Bing',
 			placeholder: 'Search with Bing',
 			url: 'https://www.bing.com/search?q=%s'
-		},
-		{
-			id: 'custom',
-			label: 'Custom',
-			placeholder: 'Search with Custom'
 		}
 	];
 
@@ -69,7 +63,6 @@
 	let faviconResolvedSrc = $state({});
 	let themeMode = $state('system');
 	let searchEngine = $state('bookmark');
-	let customSearchTemplate = $state('');
 	let formatedData = $derived(formatData(data.data));
 	let flattenedData = $derived(flattenData(formatedData));
 	const faviconPreloadTasks = new Map();
@@ -106,7 +99,6 @@
 		const savedSearchEngine = localStorage.getItem(SEARCH_ENGINE_STORAGE_KEY);
 		themeMode = THEME_MODES.includes(savedThemeMode) ? savedThemeMode : 'system';
 		searchEngine = SEARCH_ENGINES.some((engine) => engine.id === savedSearchEngine) ? savedSearchEngine : 'bookmark';
-		customSearchTemplate = localStorage.getItem(CUSTOM_SEARCH_TEMPLATE_STORAGE_KEY) || '';
 		applyTheme(themeMode, false);
 		themeMediaQuery.addEventListener('change', handleSystemThemeChange);
 	});
@@ -152,43 +144,18 @@
 		return SEARCH_ENGINES[(currentIndex + 1) % SEARCH_ENGINES.length];
 	}
 
-	function configureCustomSearch() {
-		if (!browser) return false;
-
-		const defaultTemplate = customSearchTemplate || 'https://example.com/search?q=%s';
-		const template = window.prompt('Custom search URL template, use %s for the query', defaultTemplate)?.trim();
-		if (!template) return false;
-		if (!template.includes('%s')) {
-			window.alert('Custom search URL must include %s as the query placeholder.');
-			return false;
-		}
-
-		customSearchTemplate = template;
-		localStorage.setItem(CUSTOM_SEARCH_TEMPLATE_STORAGE_KEY, template);
-		return true;
-	}
-
 	function cycleSearchEngine() {
 		const nextEngine = getNextSearchEngine(searchEngine);
-		if (nextEngine.id === 'custom' && !customSearchTemplate && !configureCustomSearch()) {
-			return;
-		}
-
 		searchEngine = nextEngine.id;
 		localStorage.setItem(SEARCH_ENGINE_STORAGE_KEY, nextEngine.id);
 		handleSearch();
-	}
-
-	function handleSearchEngineContextMenu(event) {
-		event.preventDefault();
-		configureCustomSearch();
 	}
 
 	function buildSearchUrl(query) {
 		const trimmedQuery = query.trim();
 		if (!trimmedQuery || searchEngine === 'bookmark') return '';
 
-		const template = searchEngine === 'custom' ? customSearchTemplate : activeSearchEngine.url;
+		const template = activeSearchEngine.url;
 		if (!template) return '';
 
 		return template.replace('%s', encodeURIComponent(trimmedQuery));
@@ -197,10 +164,6 @@
 	function submitSearch() {
 		if (searchEngine === 'bookmark') {
 			handleSearch();
-			return;
-		}
-
-		if (searchEngine === 'custom' && !customSearchTemplate && !configureCustomSearch()) {
 			return;
 		}
 
@@ -489,10 +452,9 @@
 					<button
 						type="button"
 						aria-label={`Switch search engine. Current: ${activeSearchEngine.label}`}
-						title={`Search engine: ${activeSearchEngine.label}. Click to switch, right-click to edit custom search.`}
+						title={`Search engine: ${activeSearchEngine.label}. Click to switch.`}
 						class="surface-search-engine mr-1 flex h-8 w-8 items-center justify-center rounded-full"
 						onclick={cycleSearchEngine}
-						oncontextmenu={handleSearchEngineContextMenu}
 					>
 						<span class="icon-[fluent--search-12-regular]" style="width: 20px; height: 20px;"></span>
 					</button>
