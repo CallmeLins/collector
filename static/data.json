@@ -4,6 +4,14 @@
         "type": "folder",
         "children": [
             {
+                "title": "AdminTest",
+                "url": "https://ai.admintest.top/",
+                "icon": "",
+                "categories": "人工智障",
+                "tags": "AI,API服务",
+                "description": "稳定性尚未可知的付费站，先蹬了再说"
+            },
+            {
                 "title": "FoxCode",
                 "url": "https://foxcode.rjj.cc",
                 "icon": "",
