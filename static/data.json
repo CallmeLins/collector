@@ -98,6 +98,14 @@
         "type": "folder",
         "children": [
             {
+                "title": "LandPPT",
+                "url": "https://cloud.landppt.com/",
+                "icon": "",
+                "categories": "工具合集",
+                "tags": "设计工具",
+                "description": "免费开源 AI PPT 一站式创作平台，支持多模型生成、文件解析、在线编辑与导出"
+            },
+            {
                 "title": "IFTTT",
                 "url": "https://ifttt.com/my_applets",
                 "icon": "",
