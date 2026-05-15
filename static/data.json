@@ -4,6 +4,14 @@
         "type": "folder",
         "children": [
             {
+                "title": "创意生图画廊",
+                "url": "https://image.oaichat.cc/",
+                "icon": "",
+                "categories": "工具合集",
+                "tags": "AI生图,创意画廊",
+                "description": "创意灵感画廊与生图大厅，可加入生图队列，实时查看排队与生成状态；作品本地留存7天，系统智能调度资源，尽享社区创作乐趣。"
+            },
+            {
                 "title": "AdminTest",
                 "url": "https://ai.admintest.top/",
                 "icon": "",
