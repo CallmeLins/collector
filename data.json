@@ -4,6 +4,14 @@
         "type": "folder",
         "children": [
             {
+                "title": "慕鸢",
+                "url": "https://muyuan.do",
+                "icon": "",
+                "categories": "人工智障",
+                "tags": "AI,模型网关,API服务",
+                "description": "多模型聚合网关，接口适配超灵活。仅限LD登录使用，主打纯免费不可外发，每日签到白嫖额度，切记无官方群聊，别被仿冒站点坑啦。"
+            },
+            {
                 "title": "创意生图画廊",
                 "url": "https://image.oaichat.cc/",
                 "icon": "",
