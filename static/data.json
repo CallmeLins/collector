@@ -208,6 +208,14 @@
                 "categories": "工具合集",
                 "tags": "图标生成,设计工具",
                 "description": "图标在线生成器，一键定制APP图标，设计小白也能用"
+            },
+            {
+                "title": "GLaDOS",
+                "url": "https://glados.one/",
+                "icon": "",
+                "categories": "工具合集",
+                "tags": "网络加速,全球节点,跨海大桥",
+                "description": "全球网络加速老牌站点，台日美港新多节点覆盖，每日签到薅流量，运营多年稳如磐石"
             }
         ]
     }
