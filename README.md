@@ -82,3 +82,7 @@ collector/
 ## 许可证
 
 本项目采用 [MIT 许可证](LICENSE)。
+
+## 致谢
+
+本项目最初基于 [wefantasy/collector](https://github.com/wefantasy/collector) 进行开发与修改，感谢原作者的开源与贡献。
